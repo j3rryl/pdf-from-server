@@ -24,7 +24,7 @@ function createInvoice(invoice,res, path) {
 
 function generateHeader(doc) {
   doc
-    // .image("logo.png", 50, 45, { width: 50 })
+    .image("logo.png", 50, 45, { width: 30 })
     .fillColor("#444444")
     .fontSize(20)
     .text("G4S Security", 110, 57)
