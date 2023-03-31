@@ -55,6 +55,15 @@ router.get("/create-pdf", function (req, res) {
   // done
   doc.end();
 
+  // const stream = res.writeHead(200, {
+  //   'Content-Type': 'application/pdf',
+  //   'Content-Disposition': `attachment;filename=invoice.pdf`,
+  // });
+  // doc.buildPDF(
+  //   (chunk) => stream.write(chunk),
+  //   () => stream.end()
+  // );
+
 });
 
 
