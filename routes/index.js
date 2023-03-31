@@ -17,14 +17,33 @@ router.get('/invoice', (req, res, next) => {
 });
 
 
+router.get("/create-invoice")
+
 router.get("/create-pdf", function (req, res) {
 
   const fs = require("fs");
   const PDFDocument = require("pdfkit-table");
 
-  let doc = new PDFDocument({ margin: 30, size: 'A4' });
-  // to save on server
-  doc.pipe(fs.createWriteStream("./document.pdf"));
+  let doc = new PDFDocument({ margin: 30, size: 'A4', bufferPages: true, font: 'Courier' });
+    // to save on server
+  doc.pipe(fs.createWriteStream("./invoice.pdf"));
+
+  doc
+  .fontSize(8)
+  .text(`Upesy\n
+  Physical Address:\n
+  Postal Code:\n
+  Country:\n
+  City:\n`, {align:'left'})
+  .text(`Billing To:\n
+  UN Habitat\n
+  Physical Address:\n
+  Postal Code:\n
+  Country:\n
+  City:\n`,{align:'right'});
+
+  doc.moveDown()
+
 
   const tableArray = {
     headers: ["Fee", "Quantitiy", "Unit Price","Total Amount"],
