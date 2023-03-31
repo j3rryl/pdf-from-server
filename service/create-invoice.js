@@ -1,27 +1,37 @@
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
 
-function createInvoice(invoice, path) {
+function createInvoice(invoice,res, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
+  // to save on server
+  doc.pipe(fs.createWriteStream("./invoice.pdf"));
   generateHeader(doc);
   generateCustomerInformation(doc, invoice);
   generateInvoiceTable(doc, invoice);
   generateFooter(doc);
 
+  doc.pipe(res);
   doc.end();
-  doc.pipe(fs.createWriteStream(path));
+//   const stream = res.writeHead(200, {
+//     'Content-Type': 'application/pdf',
+//     'Content-Disposition': `attachment;filename=invoice.pdf`,
+//   });
+//   doc.buildPDF(
+//     (chunk) => stream.write(chunk),
+//     () => stream.end()
+//   );
 }
 
 function generateHeader(doc) {
   doc
-    .image("logo.png", 50, 45, { width: 50 })
+    // .image("logo.png", 50, 45, { width: 50 })
     .fillColor("#444444")
     .fontSize(20)
-    .text("ACME Inc.", 110, 57)
+    .text("G4S Security", 110, 57)
     .fontSize(10)
-    .text("ACME Inc.", 200, 50, { align: "right" })
-    .text("123 Main Street", 200, 65, { align: "right" })
-    .text("New York, NY, 10025", 200, 80, { align: "right" })
+    .text("G4S Security", 200, 50, { align: "right" })
+    .text("Muthithi Avenue", 200, 65, { align: "right" })
+    .text("Nairobi, Westlands, 10025", 200, 80, { align: "right" })
     .moveDown();
 }
 
@@ -80,7 +90,7 @@ function generateInvoiceTable(doc, invoice) {
     "Description",
     "Unit Cost",
     "Quantity",
-    "Line Total"
+    "Total"
   );
   generateHr(doc, invoiceTableTop + 20);
   doc.font("Helvetica");
@@ -176,7 +186,7 @@ function generateHr(doc, y) {
 }
 
 function formatCurrency(cents) {
-  return "$" + (cents / 100).toFixed(2);
+  return "KES " + (cents / 100).toFixed(2);
 }
 
 function formatDate(date) {

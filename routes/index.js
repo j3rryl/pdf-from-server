@@ -2,6 +2,7 @@ const express = require('express');
 const pdfService = require('../service/pdf-service');
 const fs = require("fs");
 const PDFDocument = require("pdfkit-table");
+const { createInvoice } = require('../service/create-invoice');
 
 
 const router = express.Router();
@@ -17,7 +18,37 @@ router.get('/invoice', (req, res, next) => {
 });
 
 
-router.get("/create-invoice")
+router.get("/create-invoice",function(req,res){
+  const invoice = {
+    shipping: {
+      name: "UN Habitat",
+      address: "1234 Westlands",
+      city: "Nairobi",
+      state: "Westlands Avenue",
+      country: "Kenya",
+      postal_code: 94111
+    },
+    items: [
+      {
+        item: "VAT",
+        description: "Charged on all packages",
+        quantity: 2,
+        amount: 6000
+      },
+      {
+        item: "Premium Package",
+        description: "Premium Package service fee",
+        quantity: 1,
+        amount: 2000
+      }
+    ],
+    subtotal: 8000,
+    paid: 0,
+    invoice_nr: 1234
+  };
+  
+  createInvoice(invoice, res,"invoice.pdf");
+})
 
 router.get("/create-pdf", function (req, res) {
 
