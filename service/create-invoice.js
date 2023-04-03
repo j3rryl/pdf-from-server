@@ -28,7 +28,9 @@ function generateHeader(doc,invoice) {
   .image("logo.png", 50, 45, { width: 30 })
     .fontSize(18)
     .text("G4S Security", 110, top)
+    .font("Helvetica")
     .fontSize(10)
+    .font("Helvetica-Bold")
     .text("Invoice Number:", 350, top )
     .font("Helvetica-Bold")
     .text(invoice.invoice_nr, 450, top )
@@ -41,7 +43,6 @@ function generateHeader(doc,invoice) {
       450,
       top + 30
     )
-  
     .moveDown();
 }
 
@@ -66,8 +67,10 @@ function generateCustomerInformation(doc, invoice) {
     .font("Helvetica-Bold")
     .text("G4S Security", 50, customerInformationTop)
     .font("Helvetica")
-    .text("Muthithi Avenue", 50, customerInformationTop + 15)
-    .text("Nairobi, Westlands, 10025", 50, customerInformationTop + 30)
+    .text("10900 Muthithi", 50, customerInformationTop + 15)
+    .text("Nairobi ", 50, customerInformationTop + 30)
+    .text("Kenya", 50, customerInformationTop + 45)
+
 
     .font("Helvetica-Bold")
     .text(invoice.shipping.name, 350, customerInformationTop)
@@ -76,14 +79,13 @@ function generateCustomerInformation(doc, invoice) {
     .text(
       invoice.shipping.city +
         ", " +
-        invoice.shipping.state +
-        ", " +
-        invoice.shipping.country,
+        invoice.shipping.state,
       350,
       customerInformationTop + 30
     )
+    .text(invoice.shipping.country, 350, customerInformationTop + 45)
     .moveDown();
-  generateHr(doc, 252);
+  generateHr(doc, 267);
 }
 
 function generateInvoiceTable(doc, invoice) {
