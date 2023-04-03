@@ -5,7 +5,7 @@ function createInvoice(invoice,res, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
   // to save on server
   doc.pipe(fs.createWriteStream("./invoice.pdf"));
-  generateHeader(doc);
+  generateHeader(doc,invoice);
   generateCustomerInformation(doc, invoice);
   generateInvoiceTable(doc, invoice);
   generateFooter(doc);
@@ -22,59 +22,67 @@ function createInvoice(invoice,res, path) {
 //   );
 }
 
-function generateHeader(doc) {
+function generateHeader(doc,invoice) {
+  const top = 50
   doc
-    .image("logo.png", 50, 45, { width: 30 })
-    .fillColor("#444444")
-    .fontSize(20)
-    .text("G4S Security", 110, 57)
+  .image("logo.png", 50, 45, { width: 30 })
+    .fontSize(18)
+    .text("G4S Security", 110, top)
     .fontSize(10)
-    .text("G4S Security", 200, 50, { align: "right" })
-    .text("Muthithi Avenue", 200, 65, { align: "right" })
-    .text("Nairobi, Westlands, 10025", 200, 80, { align: "right" })
+    .text("Invoice Number:", 350, top )
+    .font("Helvetica-Bold")
+    .text(invoice.invoice_nr, 450, top )
+    .font("Helvetica")
+    .text("Invoice Date:", 350, top + 15)
+    .text(formatDate(new Date()), 450, top + 15)
+    .text("Balance Due:", 350, top + 30)
+    .text(
+      formatCurrency(invoice.subtotal - invoice.paid),
+      450,
+      top + 30
+    )
+  
     .moveDown();
 }
 
 function generateCustomerInformation(doc, invoice) {
   doc
     .fillColor("#444444")
-    .fontSize(20)
-    .text("Invoice", 50, 160);
+    .fontSize(14)
+    .text("Invoice From", 50, 160);
+
+    doc
+    .fillColor("#444444")
+    .fontSize(14)
+    .text("Invoice To", 350, 160);
 
   generateHr(doc, 185);
 
-  const customerInformationTop = 200;
+  let customerInformationTop = 200;
 
   doc
+    .fillColor("#444444")
     .fontSize(10)
-    .text("Invoice Number:", 50, customerInformationTop)
     .font("Helvetica-Bold")
-    .text(invoice.invoice_nr, 150, customerInformationTop)
+    .text("G4S Security", 50, customerInformationTop)
     .font("Helvetica")
-    .text("Invoice Date:", 50, customerInformationTop + 15)
-    .text(formatDate(new Date()), 150, customerInformationTop + 15)
-    .text("Balance Due:", 50, customerInformationTop + 30)
-    .text(
-      formatCurrency(invoice.subtotal - invoice.paid),
-      150,
-      customerInformationTop + 30
-    )
+    .text("Muthithi Avenue", 50, customerInformationTop + 15)
+    .text("Nairobi, Westlands, 10025", 50, customerInformationTop + 30)
 
     .font("Helvetica-Bold")
-    .text(invoice.shipping.name, 300, customerInformationTop)
+    .text(invoice.shipping.name, 350, customerInformationTop)
     .font("Helvetica")
-    .text(invoice.shipping.address, 300, customerInformationTop + 15)
+    .text(invoice.shipping.address, 350, customerInformationTop + 15)
     .text(
       invoice.shipping.city +
         ", " +
         invoice.shipping.state +
         ", " +
         invoice.shipping.country,
-      300,
+      350,
       customerInformationTop + 30
     )
     .moveDown();
-
   generateHr(doc, 252);
 }
 
